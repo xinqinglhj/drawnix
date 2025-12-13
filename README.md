@@ -70,6 +70,62 @@
 
 - xxx
 
+### 一键部署
+
+一键部署配置已完成。
+
+**使用方法**： 在项目根目录下运行以下命令：
+
+```
+npm run start:prod
+```
+
+**执行流程**：
+
+1. 自动执行nx build web，将前端代码打包到 dist/apps/web目录。
+
+2. 启动 Node.js 后端服务。
+
+3. 后端服务现在会同时托管 API 接口 (/api/...) 和 前端页面 (/)。
+
+4. 您可以通过访问 
+
+   ```
+   http://localhost:3000
+   ```
+
+   直接使用完整的应用。
+
+**代码更改**：
+
+- apps/server/src/main.js: 增加了静态文件托管 (express.static) 和 SPA 路由支持 (所有非 API 请求返回 index.html)。
+
+- package.json: 新增了 
+
+  ```
+  start:prod
+  ```
+
+  脚本。
+
+### Docker 部署
+
+你也可以使用 Docker 来运行该应用程序：
+
+选项 A：使用 Docker Compose（推荐）
+
+```
+docker-compose up --build -d
+```
+
+选项 B：手动构建并运行
+
+```
+docker build -t drawnix .
+docker run -p 3000:3000 drawnix
+```
+
+访问地址为 http://localhost:3000 的应用。
 
 ## 关于名称
 

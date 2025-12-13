@@ -1,19 +1,29 @@
-FROM node:20 AS builder 
+# Stage 1: Build the frontend
+FROM node:20 AS builder
+WORKDIR /repo
+COPY . .
+# Install dependencies including devDependencies for building
+RUN npm install
+# Build the frontend application
+RUN npm run build:web
 
-WORKDIR /builder
+# Stage 2: Setup the production environment
+FROM node:20
+WORKDIR /app
 
-COPY . /builder
+# Install production dependencies for the server
+COPY apps/server/package.json .
+RUN npm install --production
 
-RUN npm install \
-    && npm run build 
+# Copy server source code ensuring directory structure matches path.join expectations
+# main.js expects ../../../dist/apps/web relative to apps/server/src
+COPY apps/server/src ./apps/server/src
 
+# Copy built frontend assets from builder stage
+COPY --from=builder /repo/dist ./dist
 
-FROM lipanski/docker-static-website:2.4.0
+# Expose the port the app runs on
+EXPOSE 3000
 
-WORKDIR /home/static
-
-COPY  --from=builder /builder/dist/apps/web/  /home/static
-
-EXPOSE 80
-
-CMD ["/busybox-httpd", "-f", "-v", "-p", "80", "-c", "httpd.conf"]
+# Start the server
+CMD ["node", "apps/server/src/main.js"]

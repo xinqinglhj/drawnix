@@ -3,16 +3,22 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const db = require('./database');
 
+const path = require('path');
+
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' })); // Support large drawing data
 
-// Root route
-app.get('/', (req, res) => {
-  res.send('Drawnix Server is running');
-});
+// Serve static files from the frontend build
+const CLIENT_BUILD_PATH = path.join(__dirname, '../../../dist/apps/web');
+app.use(express.static(CLIENT_BUILD_PATH));
+
+// Root route (API availability check)
+// app.get('/', (req, res) => {
+//   res.send('Drawnix Server is running');
+// });
 
 // List all drawings with pagination and search
 app.get('/api/drawings', (req, res) => {
@@ -136,4 +142,9 @@ app.delete('/api/drawings/:id', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+});
+
+// All other requests return the React app, so it can handle routing
+app.get('*', (req, res) => {
+  res.sendFile(path.join(CLIENT_BUILD_PATH, 'index.html'));
 });

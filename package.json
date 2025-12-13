@@ -9,7 +9,8 @@
     "build:web": "nx build web",
     "test": "nx run-many -t=test",
     "release": "node scripts/release-version.js",
-    "pub": "npm run build && node scripts/publish.js"
+    "pub": "npm run build && node scripts/publish.js",
+    "start:prod": "nx build web && node apps/server/src/main.js"
   },
   "private": true,
   "dependencies": {

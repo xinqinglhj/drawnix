@@ -1,0 +1,10 @@
+version: '3'
+services:
+  drawnix:
+    build: .
+    image: drawnix-app
+    ports:
+      - "3000:3000"
+    restart: always
+    environment:
+      - PORT=3000
