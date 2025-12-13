@@ -75,6 +75,8 @@ const enTranslations: Translations = {
   // Menu items
   'menu.open': 'Open',
   'menu.saveFile': 'Save File',
+  'menu.saveToServer': 'Save to Server',
+  'menu.cloudDrawings': 'My Drawings (History)',
   'menu.exportImage': 'Export Image',
   'menu.exportImage.svg': 'SVG',
   'menu.exportImage.png': 'PNG',
@@ -112,6 +114,16 @@ const enTranslations: Translations = {
     'This will clear the entire board. Do you want to continue?',
   'cleanConfirm.cancel': 'Cancel',
   'cleanConfirm.ok': 'OK',
+
+  // Cloud Dialog
+  'cloud.dialogTitle': 'My Drawings',
+  'cloud.saveDialogTitle': 'Save to Server',
+  'cloud.enterTitle': 'Enter Title:',
+  'cloud.save': 'Save',
+  'cloud.cancel': 'Cancel',
+  'cloud.deleteConfirm': 'Are you sure you want to delete this drawing?',
+  'cloud.loading': 'Loading...',
+  'cloud.empty': 'No drawings found',
 
   // Link popup items
   'popupLink.delLink': 'Delete Link',

@@ -1,0 +1,111 @@
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const db = require('./database');
+
+const app = express();
+const PORT = 3000;
+
+app.use(cors());
+app.use(bodyParser.json({ limit: '50mb' })); // Support large drawing data
+
+// Root route
+app.get('/', (req, res) => {
+  res.send('Drawnix Server is running');
+});
+
+// List all drawings
+app.get('/api/drawings', (req, res) => {
+  const sql = 'SELECT id, title, created_at, updated_at FROM drawings ORDER BY updated_at DESC';
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'success',
+      data: rows
+    });
+  });
+});
+
+// Get a single drawing
+app.get('/api/drawings/:id', (req, res) => {
+  const sql = 'SELECT * FROM drawings WHERE id = ?';
+  const params = [req.params.id];
+  db.get(sql, params, (err, row) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    if (!row) {
+        res.status(404).json({ error: 'Drawing not found' });
+        return;
+    }
+    res.json({
+      message: 'success',
+      data: row
+    });
+  });
+});
+
+// Create a new drawing
+app.post('/api/drawings', (req, res) => {
+  const { title, data } = req.body;
+  const sql = 'INSERT INTO drawings (title, data) VALUES (?, ?)';
+  const params = [title, JSON.stringify(data)];
+  db.run(sql, params, function (err) {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'success',
+      data: {
+        id: this.lastID,
+        title
+      }
+    });
+  });
+});
+
+// Update a drawing
+app.put('/api/drawings/:id', (req, res) => {
+  const { title, data } = req.body;
+  const sql = `UPDATE drawings SET 
+               title = COALESCE(?, title), 
+               data = COALESCE(?, data), 
+               updated_at = CURRENT_TIMESTAMP 
+               WHERE id = ?`;
+  const params = [title, JSON.stringify(data), req.params.id];
+  db.run(sql, params, function (err) {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'success',
+      changes: this.changes
+    });
+  });
+});
+
+// Delete a drawing
+app.delete('/api/drawings/:id', (req, res) => {
+  const sql = 'DELETE FROM drawings WHERE id = ?';
+  const params = [req.params.id];
+  db.run(sql, params, function (err) {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'deleted',
+      changes: this.changes
+    });
+  });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

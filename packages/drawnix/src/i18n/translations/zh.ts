@@ -75,6 +75,8 @@ const zhTranslations: Translations = {
   // Menu items
   'menu.open': '打开',
   'menu.saveFile': '保存文件',
+  'menu.saveToServer': '保存到服务器',
+  'menu.cloudDrawings': '我的画作 (历史)',
   'menu.exportImage': '导出图片',
   'menu.exportImage.svg': 'SVG',
   'menu.exportImage.png': 'PNG',
@@ -109,6 +111,16 @@ const zhTranslations: Translations = {
   'cleanConfirm.description': '这将会清除整个画布。你是否要继续?',
   'cleanConfirm.cancel': '取消',
   'cleanConfirm.ok': '确认',
+
+  // Cloud Dialog
+  'cloud.dialogTitle': '我的画作',
+  'cloud.saveDialogTitle': '保存到服务器',
+  'cloud.enterTitle': '请输入标题:',
+  'cloud.save': '保存',
+  'cloud.cancel': '取消',
+  'cloud.deleteConfirm': '确定要删除这个画作吗?',
+  'cloud.loading': '加载中...',
+  'cloud.empty': '暂无画作',
 
   // Link popup items
   'popupLink.delLink': '移除连结',

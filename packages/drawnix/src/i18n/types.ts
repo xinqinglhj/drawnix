@@ -80,6 +80,8 @@ export interface Translations {
   // Menu items
   'menu.open': string;
   'menu.saveFile': string;
+  'menu.saveToServer': string;
+  'menu.cloudDrawings': string;
   'menu.exportImage': string;
   'menu.exportImage.svg': string;
   'menu.exportImage.png': string;
@@ -114,6 +116,16 @@ export interface Translations {
   'cleanConfirm.description': string;
   'cleanConfirm.cancel': string;
   'cleanConfirm.ok': string;
+
+  // Cloud Dialog
+  'cloud.dialogTitle': string;
+  'cloud.saveDialogTitle': string;
+  'cloud.enterTitle': string;
+  'cloud.save': string;
+  'cloud.cancel': string;
+  'cloud.deleteConfirm': string;
+  'cloud.loading': string;
+  'cloud.empty': string;
 
   // Link popup items
   'popupLink.delLink': string;

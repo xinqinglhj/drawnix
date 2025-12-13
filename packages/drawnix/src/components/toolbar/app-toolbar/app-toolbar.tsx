@@ -19,7 +19,7 @@ import {
 import { Island } from '../../island';
 import { Popover, PopoverContent, PopoverTrigger } from '../../popover/popover';
 import { useState } from 'react';
-import { CleanBoard, OpenFile, SaveAsImage, SaveToFile, Socials } from './app-menu-items';
+import { CleanBoard, CloudDrawingsDialog, CloudDrawingsMenuItem, OpenFile, SaveAsImage, SaveToFile, SaveToServerDialog, SaveToServerMenuItem, Socials } from './app-menu-items';
 import { LanguageSwitcherMenu } from './language-switcher-menu';
 import Menu from '../../menu/menu';
 import MenuSeparator from '../../menu/menu-separator';
@@ -30,7 +30,10 @@ export const AppToolbar = () => {
   const { t } = useI18n();
   const container = PlaitBoard.getBoardContainer(board);
   const selectedElements = getSelectedElements(board);
+
   const [appMenuOpen, setAppMenuOpen] = useState(false);
+  const [saveToServerOpen, setSaveToServerOpen] = useState(false);
+  const [cloudDrawingsOpen, setCloudDrawingsOpen] = useState(false);
   const isUndoDisabled = board.history.undos.length <= 0;
   const isRedoDisabled = board.history.redos.length <= 0;
   return (
@@ -68,7 +71,9 @@ export const AppToolbar = () => {
               }}
             >
               <OpenFile></OpenFile>
+              <CloudDrawingsMenuItem onClick={() => setCloudDrawingsOpen(true)} />
               <SaveToFile></SaveToFile>
+              <SaveToServerMenuItem onClick={() => setSaveToServerOpen(true)} />
               <SaveAsImage></SaveAsImage>
               <CleanBoard></CleanBoard>
               <MenuSeparator />
@@ -129,8 +134,11 @@ export const AppToolbar = () => {
             }}
           />
         )}
-        
+
       </Stack.Row>
+
+      <SaveToServerDialog open={saveToServerOpen} onClose={() => setSaveToServerOpen(false)} />
+      <CloudDrawingsDialog open={cloudDrawingsOpen} onClose={() => setCloudDrawingsOpen(false)} />
     </Island>
   );
 };
