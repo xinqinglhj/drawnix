@@ -1,8 +1,16 @@
+@mixin dialog-base {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
 .cloud-file-dialog {
-  width: 500px;
+  width: 600px;
   height: 600px;
   display: flex;
   flex-direction: column;
+  @include dialog-base;
 
   .cloud-file-list {
     flex: 1;
@@ -14,46 +22,54 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid #eee;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+    margin-bottom: 4px;
 
     &:hover {
-      background-color: #f5f5f5;
+      background-color: #f5f9ff;
+      transform: translateX(2px);
     }
 
     .file-info {
       display: flex;
       flex-direction: column;
+      gap: 4px;
 
       .file-title {
-        font-weight: bold;
+        font-weight: 600;
         font-size: 16px;
+        color: #333;
       }
 
       .file-date {
         font-size: 12px;
-        color: #888;
+        color: #999;
       }
     }
 
     .file-actions {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       align-items: center;
 
       .action-btn {
-        padding: 4px 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
+        padding: 6px 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
         background: white;
         cursor: pointer;
-        font-size: 12px;
+        font-size: 13px;
+        color: #555;
+        transition: all 0.2s;
 
         &:hover {
-          background: #f0f0f0;
-          border-color: #bbb;
+          background: #e6f0ff;
+          border-color: #007bff;
+          color: #007bff;
         }
       }
 
@@ -61,33 +77,54 @@
         background: none;
         border: none;
         cursor: pointer;
-        padding: 5px;
+        padding: 6px;
         opacity: 0.6;
         display: flex;
         align-items: center;
+        border-radius: 4px;
+        transition: all 0.2s;
 
         &:hover {
           opacity: 1;
-          color: red;
+          background-color: #ffebee;
+          color: #d32f2f;
         }
 
         svg {
-          width: 16px;
-          height: 16px;
+          width: 18px;
+          height: 18px;
         }
       }
     }
   }
 
   .error {
-    color: red;
+    color: #d32f2f;
     padding: 20px;
     text-align: center;
+    background: #ffebee;
+    border-radius: 4px;
+    margin: 10px;
   }
 
   .empty {
-    padding: 20px;
+    padding: 40px;
     text-align: center;
-    color: #888;
+    color: #999;
+    font-style: italic;
+  }
+}
+
+.save-server-dialog {
+  @include dialog-base;
+  width: 400px;
+  padding: 0; // Padding handled by internal div
+
+  h2 {
+    margin: 0;
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee;
+    font-size: 18px;
+    font-weight: 600;
   }
 }

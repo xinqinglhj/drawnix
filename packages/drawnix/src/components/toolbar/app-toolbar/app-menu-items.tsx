@@ -104,23 +104,55 @@ export const SaveToServerDialog = ({ open, onClose }: { open: boolean, onClose: 
       open={open}
       onOpenChange={(open) => !open && onClose()}
     >
-      <DialogContent>
+      <DialogContent className="save-server-dialog">
         <DialogHeading>{t('cloud.saveDialogTitle')}</DialogHeading>
-        <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <label>{t('cloud.enterTitle')}</label>
-          <input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder={appState.currentDrawingId ? "Leave empty to keep title (if overwriting)" : "Enter title"}
-            style={{ padding: '8px', border: '1px solid #ccc', borderRadius: '4px' }}
-          />
+        <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <label style={{ fontWeight: 500, color: '#444' }}>{t('cloud.enterTitle')}</label>
+            <input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder={appState.currentDrawingId ? "Leave empty to keep title (if overwriting)" : "Enter title"}
+              style={{
+                padding: '10px',
+                border: '1px solid #ddd',
+                borderRadius: '6px',
+                fontSize: '14px',
+                width: '100%',
+                boxSizing: 'border-box'
+              }}
+            />
+          </div>
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '10px' }}>
-            <button onClick={onClose} style={{ padding: '5px 10px' }}>{t('cloud.cancel')}</button>
+            <button
+              onClick={onClose}
+              style={{
+                padding: '8px 16px',
+                border: '1px solid #ddd',
+                borderRadius: '6px',
+                background: 'white',
+                cursor: 'pointer',
+                fontSize: '14px',
+              }}
+            >
+              {t('cloud.cancel')}
+            </button>
 
             {appState.currentDrawingId && (
               <button
                 onClick={() => handleSave(false)}
-                style={{ padding: '5px 10px', display: 'flex', alignItems: 'center', gap: '5px' }}
+                style={{
+                  padding: '8px 16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  border: '1px solid #e0e0e0',
+                  borderRadius: '6px',
+                  background: '#fff3e0',
+                  color: '#e65100',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                }}
                 title="Overwrite current file"
               >
                 {OverwriteIcon} {t('cloud.overwrite')}
@@ -129,7 +161,16 @@ export const SaveToServerDialog = ({ open, onClose }: { open: boolean, onClose: 
 
             <button
               onClick={() => handleSave(true)}
-              style={{ padding: '5px 10px', background: '#007bff', color: 'white', border: 'none', borderRadius: '4px' }}
+              style={{
+                padding: '8px 16px',
+                background: '#007bff',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: 500
+              }}
             >
               {appState.currentDrawingId ? t('cloud.saveAsNew') : t('cloud.save')}
             </button>
