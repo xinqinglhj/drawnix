@@ -3,6 +3,7 @@ import {
   GithubIcon,
   OpenFileIcon,
   SaveFileIcon,
+  SaveFileIcon as OverwriteIcon, // Icon for overwrite
   TrashIcon,
 } from '../../icons';
 import { useState } from 'react';
@@ -63,18 +64,34 @@ export const SaveToServerMenuItem = ({ onClick }: { onClick: () => void }) => {
 export const SaveToServerDialog = ({ open, onClose }: { open: boolean, onClose: () => void }) => {
   const board = useBoard();
   const { t } = useI18n();
+  const { appState } = useDrawnix();
   const [title, setTitle] = useState('');
 
-  const handleSave = async () => {
-    if (!title) return;
+  const handleSave = async (isNew: boolean) => {
+    if (!title && isNew) {
+      alert('Please enter a title');
+      return;
+    }
     try {
       const saveData = {
         elements: board.children,
         viewport: board.viewport,
         theme: board.theme
       };
-      await DrawingService.create(title, saveData);
-      alert('Saved successfully!');
+
+      if (!isNew && appState.currentDrawingId) {
+        // Overwrite logic
+        await DrawingService.update(appState.currentDrawingId, {
+          data: JSON.stringify(saveData)
+          // We don't update title here to keep it simple, or we could pass title if provided
+        });
+        alert('Overwritten successfully!');
+      } else {
+        // Create new
+        await DrawingService.create(title, saveData);
+        alert('Saved as new successfully!');
+      }
+
       onClose();
       setTitle('');
     } catch (e: any) {
@@ -96,11 +113,28 @@ export const SaveToServerDialog = ({ open, onClose }: { open: boolean, onClose: 
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            placeholder={appState.currentDrawingId ? "Leave empty to keep title (if overwriting)" : "Enter title"}
             style={{ padding: '8px', border: '1px solid #ccc', borderRadius: '4px' }}
           />
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '10px' }}>
             <button onClick={onClose} style={{ padding: '5px 10px' }}>{t('cloud.cancel')}</button>
-            <button onClick={handleSave} style={{ padding: '5px 10px', background: '#007bff', color: 'white', border: 'none', borderRadius: '4px' }}>{t('cloud.save')}</button>
+
+            {appState.currentDrawingId && (
+              <button
+                onClick={() => handleSave(false)}
+                style={{ padding: '5px 10px', display: 'flex', alignItems: 'center', gap: '5px' }}
+                title="Overwrite current file"
+              >
+                <OverwriteIcon /> {t('cloud.overwrite')}
+              </button>
+            )}
+
+            <button
+              onClick={() => handleSave(true)}
+              style={{ padding: '5px 10px', background: '#007bff', color: 'white', border: 'none', borderRadius: '4px' }}
+            >
+              {appState.currentDrawingId ? t('cloud.saveAsNew') : t('cloud.save')}
+            </button>
           </div>
         </div>
       </DialogContent>
@@ -124,6 +158,7 @@ export const CloudDrawingsMenuItem = ({ onClick }: { onClick: () => void }) => {
 export const CloudDrawingsDialog = ({ open, onClose }: { open: boolean, onClose: () => void }) => {
   const board = useBoard();
   const listRender = useListRender();
+  const { appState, setAppState } = useDrawnix();
 
   const clearAndLoad = (
     value: PlaitElement[],
@@ -146,14 +181,25 @@ export const CloudDrawingsDialog = ({ open, onClose }: { open: boolean, onClose:
   return (
     <CloudFileDialog
       onClose={onClose}
-      onOpen={(drawing) => {
+      onOpen={async (drawing, readonly) => {
         try {
-          const data = JSON.parse(drawing.data);
+          // Fetch full details including 'data'
+          const fullDrawing = await DrawingService.getOne(drawing.id);
+          const data = JSON.parse(fullDrawing.data);
+
           if (Array.isArray(data)) {
             clearAndLoad(data);
           } else {
             clearAndLoad(data.elements, data.viewport, data.theme);
           }
+
+          // Update Global State
+          setAppState(prev => ({
+            ...prev,
+            currentDrawingId: drawing.id,
+            readonly: readonly
+          }));
+
           onClose();
         } catch (e) {
           console.error('Failed to parse drawing data', e);

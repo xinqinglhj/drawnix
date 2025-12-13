@@ -124,6 +124,10 @@ const enTranslations: Translations = {
   'cloud.deleteConfirm': 'Are you sure you want to delete this drawing?',
   'cloud.loading': 'Loading...',
   'cloud.empty': 'No drawings found',
+  'cloud.overwrite': 'Overwrite',
+  'cloud.saveAsNew': 'Save as New',
+  'cloud.view': 'View',
+  'cloud.edit': 'Edit',
 
   // Link popup items
   'popupLink.delLink': 'Delete Link',

@@ -7,7 +7,7 @@ import { TrashIcon } from '../icons';
 
 export interface CloudFileDialogProps {
     onClose: () => void;
-    onOpen: (drawing: RemoteDrawing) => void;
+    onOpen: (drawing: RemoteDrawing, readonly: boolean) => void;
 }
 
 export const CloudFileDialog: React.FC<CloudFileDialogProps> = ({
@@ -65,7 +65,6 @@ export const CloudFileDialog: React.FC<CloudFileDialogProps> = ({
                         <div
                             key={drawing.id}
                             className="cloud-file-item"
-                            onClick={() => onOpen(drawing)}
                         >
                             <div className="file-info">
                                 <span className="file-title">{drawing.title}</span>
@@ -73,13 +72,29 @@ export const CloudFileDialog: React.FC<CloudFileDialogProps> = ({
                                     {new Date(drawing.updated_at).toLocaleString()}
                                 </span>
                             </div>
-                            <button
-                                className="delete-btn"
-                                onClick={(e) => handleDelete(e, drawing.id)}
-                                title={t('general.delete')}
-                            >
-                                {TrashIcon}
-                            </button>
+                            <div className="file-actions">
+                                <button
+                                    className="action-btn"
+                                    onClick={() => onOpen(drawing, true)}
+                                    title={t('cloud.view') || 'View'}
+                                >
+                                    查看
+                                </button>
+                                <button
+                                    className="action-btn"
+                                    onClick={() => onOpen(drawing, false)}
+                                    title={t('cloud.edit') || 'Edit'}
+                                >
+                                    编辑
+                                </button>
+                                <button
+                                    className="delete-btn"
+                                    onClick={(e) => handleDelete(e, drawing.id)}
+                                    title={t('general.delete')}
+                                >
+                                    {TrashIcon}
+                                </button>
+                            </div>
                         </div>
                     ))}
                 </div>

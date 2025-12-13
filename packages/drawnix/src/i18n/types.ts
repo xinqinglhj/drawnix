@@ -126,6 +126,10 @@ export interface Translations {
   'cloud.deleteConfirm': string;
   'cloud.loading': string;
   'cloud.empty': string;
+  'cloud.overwrite': string;
+  'cloud.saveAsNew': string;
+  'cloud.view': string;
+  'cloud.edit': string;
 
   // Link popup items
   'popupLink.delLink': string;

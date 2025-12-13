@@ -40,17 +40,20 @@ export type DrawnixState = {
   isPencilMode: boolean;
   openDialogType: DialogType | null;
   openCleanConfirm: boolean;
+
   linkState?: LinkState | null;
+  readonly?: boolean;
+  currentDrawingId?: number | null;
 };
 
 export const DrawnixContext = createContext<{
   appState: DrawnixState;
-  setAppState: (appState: DrawnixState) => void;
+  setAppState: React.Dispatch<React.SetStateAction<DrawnixState>>;
 } | null>(null);
 
 export const useDrawnix = (): {
   appState: DrawnixState;
-  setAppState: (appState: DrawnixState) => void;
+  setAppState: React.Dispatch<React.SetStateAction<DrawnixState>>;
 } => {
   const context = useContext(DrawnixContext);
 

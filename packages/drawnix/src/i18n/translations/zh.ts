@@ -121,6 +121,10 @@ const zhTranslations: Translations = {
   'cloud.deleteConfirm': '确定要删除这个画作吗?',
   'cloud.loading': '加载中...',
   'cloud.empty': '暂无画作',
+  'cloud.overwrite': '覆盖',
+  'cloud.saveAsNew': '另存为新画作',
+  'cloud.view': '查看',
+  'cloud.edit': '编辑',
 
   // Link popup items
   'popupLink.delLink': '移除连结',

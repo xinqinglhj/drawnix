@@ -82,6 +82,8 @@ export const Drawnix: React.FC<DrawnixProps> = ({
       isPencilMode: false,
       openDialogType: null,
       openCleanConfirm: false,
+      readonly: false,
+      currentDrawingId: null,
     };
   });
 
