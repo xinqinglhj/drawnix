@@ -125,7 +125,7 @@ export const SaveToServerDialog = ({ open, onClose }: { open: boolean, onClose: 
                 style={{ padding: '5px 10px', display: 'flex', alignItems: 'center', gap: '5px' }}
                 title="Overwrite current file"
               >
-                <OverwriteIcon /> {t('cloud.overwrite')}
+                {OverwriteIcon} {t('cloud.overwrite')}
               </button>
             )}
 
