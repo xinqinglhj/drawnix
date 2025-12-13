@@ -66,13 +66,6 @@ export const Drawnix: React.FC<DrawnixProps> = ({
   afterInit,
   tutorial = false,
 }) => {
-  const options: PlaitBoardOptions = {
-    readonly: false,
-    hideScrollbar: false,
-    disabledScrollOnNonFocus: false,
-    themeColors: MindThemeColors,
-  };
-
   const [appState, setAppState] = useState<DrawnixState>(() => {
     // TODO: need to consider how to maintenance the pointer state in future
     const md = new MobileDetect(window.navigator.userAgent);
@@ -87,6 +80,13 @@ export const Drawnix: React.FC<DrawnixProps> = ({
     };
   });
 
+  const options: PlaitBoardOptions = {
+    readonly: appState.readonly,
+    hideScrollbar: false,
+    disabledScrollOnNonFocus: false,
+    themeColors: MindThemeColors,
+  };
+
   const [board, setBoard] = useState<DrawnixBoard | null>(null);
 
   if (board) {
@@ -99,6 +99,12 @@ export const Drawnix: React.FC<DrawnixProps> = ({
       ...newAppState,
     });
   };
+
+  useEffect(() => {
+    if (board) {
+      board.options.readonly = appState.readonly;
+    }
+  }, [board, appState.readonly]);
 
   const plugins: PlaitPlugin[] = [
     withDraw,
