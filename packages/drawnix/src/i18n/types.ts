@@ -120,6 +120,12 @@ export interface Translations {
   // Cloud Dialog
   'cloud.dialogTitle': string;
   'cloud.saveDialogTitle': string;
+  'cloud.searchPlaceholder': string;
+  'cloud.pageInfo': string;
+  'cloud.total': string;
+  'cloud.prev': string;
+  'cloud.next': string;
+  'cloud.rowsPerPage': string;
   'cloud.enterTitle': string;
   'cloud.save': string;
   'cloud.cancel': string;

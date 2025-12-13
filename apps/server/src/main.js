@@ -14,17 +14,45 @@ app.get('/', (req, res) => {
   res.send('Drawnix Server is running');
 });
 
-// List all drawings
+// List all drawings with pagination and search
 app.get('/api/drawings', (req, res) => {
-  const sql = 'SELECT id, title, created_at, updated_at FROM drawings ORDER BY updated_at DESC';
-  db.all(sql, [], (err, rows) => {
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = parseInt(req.query.pageSize) || 10;
+  const title = req.query.title || '';
+  const offset = (page - 1) * pageSize;
+
+  let countSql = 'SELECT COUNT(*) as total FROM drawings';
+  let dataSql = 'SELECT id, title, created_at, updated_at FROM drawings';
+  let params = [];
+
+  if (title) {
+    const whereClause = ' WHERE title LIKE ?';
+    countSql += whereClause;
+    dataSql += whereClause;
+    params.push(`%${title}%`);
+  }
+
+  dataSql += ' ORDER BY updated_at DESC LIMIT ? OFFSET ?';
+
+  db.get(countSql, params, (err, countRow) => {
     if (err) {
       res.status(400).json({ error: err.message });
       return;
     }
-    res.json({
-      message: 'success',
-      data: rows
+
+    const total = countRow.total;
+    const dataParams = [...params, pageSize, offset];
+
+    db.all(dataSql, dataParams, (err, rows) => {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res.json({
+        message: 'success',
+        total,
+        data: rows
+      });
     });
   });
 });
@@ -39,8 +67,8 @@ app.get('/api/drawings/:id', (req, res) => {
       return;
     }
     if (!row) {
-        res.status(404).json({ error: 'Drawing not found' });
-        return;
+      res.status(404).json({ error: 'Drawing not found' });
+      return;
     }
     res.json({
       message: 'success',

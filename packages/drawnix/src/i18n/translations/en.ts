@@ -118,6 +118,12 @@ const enTranslations: Translations = {
   // Cloud Dialog
   'cloud.dialogTitle': 'My Drawings',
   'cloud.saveDialogTitle': 'Save to Server',
+  'cloud.searchPlaceholder': 'Search title...',
+  'cloud.pageInfo': 'Page {{page}} of {{totalPage}}',
+  'cloud.total': 'Total {{total}}',
+  'cloud.prev': 'Prev',
+  'cloud.next': 'Next',
+  'cloud.rowsPerPage': 'Rows per page:',
   'cloud.enterTitle': 'Enter Title:',
   'cloud.save': 'Save',
   'cloud.cancel': 'Cancel',

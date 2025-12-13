@@ -9,13 +9,18 @@ export interface RemoteDrawing {
 }
 
 export const DrawingService = {
-    async getAll(): Promise<RemoteDrawing[]> {
-        const response = await fetch(`${API_BASE_URL}/drawings`);
+    async getAll(params: { page?: number; pageSize?: number; title?: string } = {}): Promise<{ total: number; data: RemoteDrawing[] }> {
+        const query = new URLSearchParams({
+            page: (params.page || 1).toString(),
+            pageSize: (params.pageSize || 10).toString(),
+            title: params.title || '',
+        });
+        const response = await fetch(`${API_BASE_URL}/drawings?${query}`);
         if (!response.ok) {
             throw new Error('Failed to fetch drawings');
         }
         const result = await response.json();
-        return result.data;
+        return result; // result is { message, total, data }
     },
 
     async getOne(id: number): Promise<RemoteDrawing> {

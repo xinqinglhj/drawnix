@@ -115,6 +115,12 @@ const zhTranslations: Translations = {
   // Cloud Dialog
   'cloud.dialogTitle': '我的画作',
   'cloud.saveDialogTitle': '保存到服务器',
+  'cloud.searchPlaceholder': '搜索画作标题...',
+  'cloud.pageInfo': '第 {{page}} 页 / 共 {{totalPage}} 页',
+  'cloud.total': '共 {{total}} 条',
+  'cloud.prev': '上一页',
+  'cloud.next': '下一页',
+  'cloud.rowsPerPage': '每页显示:',
   'cloud.enterTitle': '请输入标题:',
   'cloud.save': '保存',
   'cloud.cancel': '取消',
