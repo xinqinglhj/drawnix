@@ -81,10 +81,8 @@ export const SaveToServerDialog = ({ open, onClose }: { open: boolean, onClose: 
 
       if (!isNew && appState.currentDrawingId) {
         // Overwrite logic
-        await DrawingService.update(appState.currentDrawingId, {
-          data: JSON.stringify(saveData)
-          // We don't update title here to keep it simple, or we could pass title if provided
-        });
+        // Overwrite logic
+        await DrawingService.update(appState.currentDrawingId, title || undefined, saveData);
         alert('Overwritten successfully!');
       } else {
         // Create new
