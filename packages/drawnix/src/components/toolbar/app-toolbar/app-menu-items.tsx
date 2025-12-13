@@ -142,7 +142,7 @@ export const SaveToServerDialog = ({ open, onClose }: { open: boolean, onClose: 
               <button
                 onClick={() => handleSave(false)}
                 style={{
-                  padding: '8px 16px',
+                  padding: '8px 12px',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
@@ -152,6 +152,7 @@ export const SaveToServerDialog = ({ open, onClose }: { open: boolean, onClose: 
                   color: '#e65100',
                   cursor: 'pointer',
                   fontSize: '14px',
+                  whiteSpace: 'nowrap',
                 }}
                 title="Overwrite current file"
               >
@@ -162,14 +163,15 @@ export const SaveToServerDialog = ({ open, onClose }: { open: boolean, onClose: 
             <button
               onClick={() => handleSave(true)}
               style={{
-                padding: '8px 16px',
+                padding: '8px 12px',
                 background: '#007bff',
                 color: 'white',
                 border: 'none',
                 borderRadius: '6px',
                 cursor: 'pointer',
                 fontSize: '14px',
-                fontWeight: 500
+                fontWeight: 500,
+                whiteSpace: 'nowrap',
               }}
             >
               {appState.currentDrawingId ? t('cloud.saveAsNew') : t('cloud.save')}
