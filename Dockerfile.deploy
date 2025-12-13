@@ -1,0 +1,24 @@
+# Server Deploy Dockerfile
+# Use this if you have already built the frontend locally (dist/apps/web exists)
+# and want to minimize file uploads to the server.
+
+# FROM node:20-slim
+# 直接从指定镜像下载
+FROM swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/library/node:20-bullseye-slim-linuxarm64
+
+WORKDIR /app
+
+# 1. Install Server Dependencies
+COPY apps/server/package.json .
+RUN npm install --production
+
+# 2. Copy Server Source Code
+COPY apps/server/src ./apps/server/src
+
+# 3. Copy Built Frontend Assets (from local your machine)
+# Ensure you upload the 'dist' folder to the server in the same directory as this Dockerfile
+COPY dist ./dist
+
+EXPOSE 3000
+
+CMD ["node", "apps/server/src/main.js"]

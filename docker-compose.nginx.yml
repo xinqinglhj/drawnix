@@ -1,0 +1,25 @@
+version: '3'
+services:
+  # 1. Backend Service (Only runs API, no static serving needed)
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.deploy
+    restart: always
+    environment:
+      - PORT=3000
+    volumes:
+      - ./data:/app/data
+
+  # 2. Nginx Service (Frontend + Reverse Proxy)
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80" # Expose standard HTTP port
+    volumes:
+        # Mount the built frontend files to Nginx
+      - ./dist/apps/web:/usr/share/nginx/html
+        # Mount our custom config
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - backend
