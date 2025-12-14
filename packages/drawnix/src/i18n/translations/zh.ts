@@ -138,6 +138,11 @@ const zhTranslations: Translations = {
   'cloud.syncSuccess': '同步成功',
   'cloud.modeCloud': '云端',
   'cloud.modeLocal': '本地浏览器',
+  'cloud.syncAllToLocal': '一键同步到本地',
+  'cloud.syncAllToCloud': '一键同步到云端',
+  'cloud.confirmSyncAllToLocal': '确定要将所有云端画作同步到本地吗？',
+  'cloud.confirmSyncAllToCloud': '确定要将所有本地画作同步到云端吗？',
+  'cloud.syncAllSuccess': '批量同步完成！',
 
   // Link popup items
   'popupLink.delLink': '移除连结',

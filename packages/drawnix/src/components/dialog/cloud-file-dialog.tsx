@@ -148,6 +148,60 @@ export const CloudFileDialog: React.FC<CloudFileDialogProps> = ({
                     </div>
                 </div>
 
+
+
+                {/* Bulk Sync Controls */}
+                <div style={{ padding: '0 10px 10px 10px', display: 'flex', justifyContent: 'flex-end' }}>
+                    {tab === 'cloud' ? (
+                        <button
+                            onClick={async () => {
+                                if (!confirm(t('cloud.confirmSyncAllToLocal') || 'Sync all cloud drawings to local?')) return;
+                                setLoading(true);
+                                try {
+                                    await StorageManager.syncAllToLocal((curr, total) => {
+                                        // Optional: Update progress state if you add UI for it
+                                        console.log(`Syncing to local: ${curr}/${total}`);
+                                    });
+                                    alert(t('cloud.syncAllSuccess') || 'All synced to local!');
+                                    fetchDrawings(); // Refresh view if on local tab (though we are on cloud tab)
+                                } catch (e: any) {
+                                    alert('Sync all failed: ' + e.message);
+                                } finally {
+                                    setLoading(false);
+                                }
+                            }}
+                            className="action-btn"
+                            style={{ padding: '6px 12px', fontSize: '13px', background: '#e3f2fd', color: '#0d47a1', border: '1px solid #bbdefb' }}
+                            disabled={loading}
+                        >
+                            {loading ? 'Syncing...' : (t('cloud.syncAllToLocal') || 'Sync All to Local')}
+                        </button>
+                    ) : (
+                        <button
+                            onClick={async () => {
+                                if (!confirm(t('cloud.confirmSyncAllToCloud') || 'Sync all local drawings to cloud?')) return;
+                                setLoading(true);
+                                try {
+                                    await StorageManager.syncAllToCloud((curr, total) => {
+                                        console.log(`Syncing to cloud: ${curr}/${total}`);
+                                    });
+                                    alert(t('cloud.syncAllSuccess') || 'All synced to cloud!');
+                                    fetchDrawings();
+                                } catch (e: any) {
+                                    alert('Sync all failed: ' + e.message);
+                                } finally {
+                                    setLoading(false);
+                                }
+                            }}
+                            className="action-btn"
+                            style={{ padding: '6px 12px', fontSize: '13px', background: '#e3f2fd', color: '#0d47a1', border: '1px solid #bbdefb' }}
+                            disabled={loading}
+                        >
+                            {loading ? 'Syncing...' : (t('cloud.syncAllToCloud') || 'Sync All to Cloud')}
+                        </button>
+                    )}
+                </div>
+
                 {/* Search Bar */}
                 <div style={{ padding: '0 10px 10px 10px', display: 'flex', gap: '8px' }}>
                     <input
@@ -296,6 +350,6 @@ export const CloudFileDialog: React.FC<CloudFileDialogProps> = ({
                     </div>
                 )}
             </DialogContent>
-        </Dialog>
+        </Dialog >
     );
 };

@@ -143,6 +143,11 @@ export interface Translations {
   'cloud.syncSuccess': string;
   'cloud.modeCloud': string;
   'cloud.modeLocal': string;
+  'cloud.syncAllToLocal': string;
+  'cloud.syncAllToCloud': string;
+  'cloud.confirmSyncAllToLocal': string;
+  'cloud.confirmSyncAllToCloud': string;
+  'cloud.syncAllSuccess': string;
 
   // Link popup items
   'popupLink.delLink': string;

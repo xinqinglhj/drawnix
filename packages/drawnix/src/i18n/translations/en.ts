@@ -141,6 +141,11 @@ const enTranslations: Translations = {
   'cloud.syncSuccess': 'Success',
   'cloud.modeCloud': 'Cloud',
   'cloud.modeLocal': 'Local Browser',
+  'cloud.syncAllToLocal': 'Sync All to Local',
+  'cloud.syncAllToCloud': 'Sync All to Cloud',
+  'cloud.confirmSyncAllToLocal': 'Are you sure you want to sync all cloud drawings to local storage?',
+  'cloud.confirmSyncAllToCloud': 'Are you sure you want to sync all local drawings to cloud storage?',
+  'cloud.syncAllSuccess': 'Bulk Sync Completed!',
 
   // Link popup items
   'popupLink.delLink': 'Delete Link',
