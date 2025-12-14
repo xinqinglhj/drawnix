@@ -82,7 +82,7 @@ npm run start:prod
 
 **执行流程**：
 
-1. 自动执行nx build web，将前端代码打包到 dist/apps/web目录。
+1. 自动执行nx build web，将前端代码打包到 dist/apps/web目录。(也可单独执行 npm run build:web 打包前端)
 
 2. 启动 Node.js 后端服务。
 
