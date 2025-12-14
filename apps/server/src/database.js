@@ -1,7 +1,7 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
-const DBSOURCE = path.join(__dirname, '..', 'drawnix.db');
+const DBSOURCE = process.env.DB_PATH || path.join(__dirname, '..', 'drawnix.db');
 
 const db = new sqlite3.Database(DBSOURCE, (err) => {
     if (err) {

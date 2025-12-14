@@ -6,6 +6,7 @@
 # 直接从指定镜像下载
 FROM swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/library/node:20-bullseye-slim-linuxarm64
 
+# 设置工作目录为/app，后续操作将在此目录执行
 WORKDIR /app
 
 # sqlite3 模块安装根据 node 是否包含sqlite3选择安装
@@ -27,4 +28,5 @@ COPY dist ./dist
 # 应用监听的端口（由 environment: PORT=3000 和 EXPOSE 3000 定义）
 EXPOSE 3000
 
+# 指定容器启动时执行的命令（启动Node.js服务器）
 CMD ["node", "apps/server/src/main.js"]

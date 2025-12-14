@@ -1,14 +1,26 @@
+# 指定 Docker Compose 文件的版本为 3.x（兼容性声明，支持多阶段构建、扩展配置等特性）
 version: '3'
+# 定义 Compose 要管理的服务集合（本文件只包含一个服务）
 services:
+  # 定义服务名称为 drawnix（对应 Docker 容器名称前缀）
   drawnix:
+    # 配置构建规则
     build:
+      # 构建上下文为当前目录（包含 Dockerfile.deploy 和项目源码）
       context: .
+      # 指定使用 Dockerfile.deploy 作为构建脚本（而非默认的 Dockerfile）
       dockerfile: Dockerfile.deploy
+    # 指定构建完成后生成的镜像名称为 drawnix-server（可通过 docker images 查看）
     image: drawnix-server
+    # 端口映射配置
     ports:
       - "8100:3000" # 宿主机 8100 端口 → 容器 3000 端口, 外部访问通过 http://宿主机IP:8100，流量转发到容器内的 3000 端口。
+    # 设置容器自动重启策略（无论退出状态如何都尝试重启，适合生产环境）
     restart: always
+    # 设置容器环境变量
     environment:
       - PORT=3000 # 保持 PORT=3000，确保应用在容器内继续监听 3000 端口（与 Dockerfile.deploy 中 EXPOSE 3000 和应用代码逻辑一致）。
+      - DB_PATH=/app/data/drawnix.db # Ensure DB is stored in volume
+    # 数据卷挂载配置（将宿主机的 ./data 目录挂载到容器的 /app/data 目录）
     volumes:
       - ./data:/app/data  # Optional: Persist SQLite DB
