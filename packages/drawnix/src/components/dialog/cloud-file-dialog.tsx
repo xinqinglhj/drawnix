@@ -10,7 +10,7 @@ import { StorageManager } from '../../api/storage-manager';
 
 export interface CloudFileDialogProps {
     onClose: () => void;
-    onOpen: (drawing: RemoteDrawing, readonly: boolean) => void;
+    onOpen: (drawing: RemoteDrawing, readonly: boolean, isLocal: boolean) => void;
 }
 
 export const CloudFileDialog: React.FC<CloudFileDialogProps> = ({
@@ -199,14 +199,14 @@ export const CloudFileDialog: React.FC<CloudFileDialogProps> = ({
                             <div className="file-actions">
                                 <button
                                     className="action-btn"
-                                    onClick={() => onOpen(drawing, true)}
+                                    onClick={() => onOpen(drawing, true, tab === 'local')}
                                     title={t('cloud.view') || 'View'}
                                 >
                                     {t('cloud.view') || 'View'}
                                 </button>
                                 <button
                                     className="action-btn"
-                                    onClick={() => onOpen(drawing, false)}
+                                    onClick={() => onOpen(drawing, false, tab === 'local')}
                                     title={t('cloud.edit') || 'Edit'}
                                 >
                                     {t('cloud.edit') || 'Edit'}
