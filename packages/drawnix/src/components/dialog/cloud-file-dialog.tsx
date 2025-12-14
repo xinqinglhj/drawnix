@@ -64,9 +64,57 @@ export const CloudFileDialog: React.FC<CloudFileDialogProps> = ({
         }
     };
 
+    const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+
+    const toggleSelect = (id: number) => {
+        const newSelected = new Set(selectedIds);
+        if (newSelected.has(id)) {
+            newSelected.delete(id);
+        } else {
+            newSelected.add(id);
+        }
+        setSelectedIds(newSelected);
+    };
+
+    const toggleSelectAll = () => {
+        if (selectedIds.size === drawings.length && drawings.length > 0) {
+            setSelectedIds(new Set());
+        } else {
+            setSelectedIds(new Set(drawings.map(d => d.id)));
+        }
+    };
+
+    const handleBulkDelete = async () => {
+        if (selectedIds.size === 0) return;
+        const confirmMsg = t('cloud.confirmDeleteSelected').replace('{{count}}', selectedIds.size.toString());
+        if (!confirm(confirmMsg)) return;
+
+        setLoading(true);
+        try {
+            const idsToDelete = Array.from(selectedIds);
+            // Delete sequentially or parallel? Parallel is faster.
+            await Promise.all(idsToDelete.map(id => {
+                if (tab === 'local') {
+                    return LocalDrawingService.delete(id);
+                } else {
+                    return DrawingService.delete(id);
+                }
+            }));
+
+            setSelectedIds(new Set());
+            fetchDrawings();
+            alert(t('cloud.syncSuccess') || 'Success'); // Reuse success message
+        } catch (e: any) {
+            alert('Delete failed: ' + e.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     // Trigger fetch when parameters or TAB change
     useEffect(() => {
         fetchDrawings();
+        setSelectedIds(new Set()); // Clear selection on tab/page change
     }, [page, pageSize, tab]);
 
     // Handle search enter or blur
@@ -150,8 +198,21 @@ export const CloudFileDialog: React.FC<CloudFileDialogProps> = ({
 
 
 
-                {/* Bulk Sync Controls */}
-                <div style={{ padding: '0 10px 10px 10px', display: 'flex', justifyContent: 'flex-end' }}>
+                {/* Bulk Actions Controls */}
+                <div style={{ padding: '0 10px 10px 10px', display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+
+                    {/* Batch Delete */}
+                    {selectedIds.size > 0 && (
+                        <button
+                            onClick={handleBulkDelete}
+                            className="action-btn"
+                            style={{ padding: '6px 12px', fontSize: '13px', background: '#ffebee', color: '#c62828', border: '1px solid #ffcdd2' }}
+                            disabled={loading}
+                        >
+                            {loading ? 'Deleting...' : (t('cloud.deleteSelected') || 'Delete Selected') + ` (${selectedIds.size})`}
+                        </button>
+                    )}
+
                     {tab === 'cloud' ? (
                         <button
                             onClick={async () => {
@@ -204,6 +265,19 @@ export const CloudFileDialog: React.FC<CloudFileDialogProps> = ({
 
                 {/* Search Bar */}
                 <div style={{ padding: '0 10px 10px 10px', display: 'flex', gap: '8px' }}>
+
+                    {/* Select All Checkbox */}
+                    {drawings.length > 0 && (
+                        <div style={{ display: 'flex', alignItems: 'center', paddingLeft: '4px' }}>
+                            <input
+                                type="checkbox"
+                                checked={drawings.length > 0 && selectedIds.size === drawings.length}
+                                onChange={toggleSelectAll}
+                                style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+                            />
+                        </div>
+                    )}
+
                     <input
                         type="text"
                         value={search}
@@ -243,7 +317,18 @@ export const CloudFileDialog: React.FC<CloudFileDialogProps> = ({
                         <div
                             key={drawing.id}
                             className="cloud-file-item"
+                            style={{ display: 'flex', alignItems: 'center' }}
                         >
+                            {/* Row Checkbox */}
+                            <div style={{ marginRight: '10px', display: 'flex', alignItems: 'center' }}>
+                                <input
+                                    type="checkbox"
+                                    checked={selectedIds.has(drawing.id)}
+                                    onChange={(e) => { e.stopPropagation(); toggleSelect(drawing.id); }}
+                                    style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+                                />
+                            </div>
+
                             <div className="file-info">
                                 <span className="file-title">{drawing.title}</span>
                                 <span className="file-date">

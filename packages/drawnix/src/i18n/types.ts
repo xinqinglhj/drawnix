@@ -148,6 +148,10 @@ export interface Translations {
   'cloud.confirmSyncAllToLocal': string;
   'cloud.confirmSyncAllToCloud': string;
   'cloud.syncAllSuccess': string;
+  'cloud.deleteSelected': string;
+  'cloud.confirmDeleteSelected': string;
+  'cloud.confirmSyncAllToCloud': string;
+  'cloud.syncAllSuccess': string;
 
   // Link popup items
   'popupLink.delLink': string;

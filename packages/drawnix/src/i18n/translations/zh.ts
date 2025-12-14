@@ -143,6 +143,10 @@ const zhTranslations: Translations = {
   'cloud.confirmSyncAllToLocal': '确定要将所有云端画作同步到本地吗？',
   'cloud.confirmSyncAllToCloud': '确定要将所有本地画作同步到云端吗？',
   'cloud.syncAllSuccess': '批量同步完成！',
+  'cloud.deleteSelected': '批量删除',
+  'cloud.confirmDeleteSelected': '确定要删除选中的 {{count}} 个项目吗？',
+  'cloud.confirmSyncAllToCloud': '确定要将所有本地画作同步到云端吗？',
+  'cloud.syncAllSuccess': '批量同步完成！',
 
   // Link popup items
   'popupLink.delLink': '移除连结',
