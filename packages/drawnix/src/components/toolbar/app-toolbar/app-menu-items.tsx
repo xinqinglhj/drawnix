@@ -28,6 +28,8 @@ import { MenuContentPropsContext } from '../../menu/common';
 import { EVENT } from '../../../constants';
 import { getShortcutKey } from '../../../utils/common';
 import { DrawingService } from '../../../api/drawing-service';
+import { LocalDrawingService } from '../../../api/local-drawing-service';
+import { StorageMode } from '../../../api/storage-manager';
 import { CloudFileDialog } from '../../dialog/cloud-file-dialog';
 import { Dialog, DialogContent, DialogHeading } from '../../dialog/dialog';
 
@@ -66,6 +68,7 @@ export const SaveToServerDialog = ({ open, onClose }: { open: boolean, onClose: 
   const { t } = useI18n();
   const { appState } = useDrawnix();
   const [title, setTitle] = useState('');
+  const [mode, setMode] = useState<StorageMode>(StorageMode.Cloud);
 
   const handleSave = async (isNew: boolean) => {
     if (!title && isNew) {
@@ -79,15 +82,36 @@ export const SaveToServerDialog = ({ open, onClose }: { open: boolean, onClose: 
         theme: board.theme
       };
 
-      if (!isNew && appState.currentDrawingId) {
-        // Overwrite logic
-        // Overwrite logic
-        await DrawingService.update(appState.currentDrawingId, title || undefined, saveData);
-        alert('Overwritten successfully!');
+      if (mode === StorageMode.Local) {
+        if (!isNew && appState.currentDrawingId) {
+          await LocalDrawingService.update(appState.currentDrawingId, title || undefined, saveData);
+          alert('Updated locally!');
+        } else {
+          await LocalDrawingService.create(title, saveData);
+          alert('Saved locally!');
+        }
       } else {
-        // Create new
-        await DrawingService.create(title, saveData);
-        alert('Saved as new successfully!');
+        try {
+          if (!isNew && appState.currentDrawingId) {
+            await DrawingService.update(appState.currentDrawingId, title || undefined, saveData);
+            alert('Overwritten on cloud successfully!');
+          } else {
+            await DrawingService.create(title, saveData);
+            alert('Saved to cloud successfully!');
+          }
+        } catch (cloudErr: any) {
+          // Fallback logic
+          if (confirm('Connection to server failed. Save to local storage instead?')) {
+            try {
+              await LocalDrawingService.create(title + ' (Offline)', saveData);
+              alert('Saved to local storage.');
+            } catch (localErr: any) {
+              alert('Failed to save locally: ' + localErr.message);
+            }
+          } else {
+            throw cloudErr;
+          }
+        }
       }
 
       onClose();
@@ -107,6 +131,29 @@ export const SaveToServerDialog = ({ open, onClose }: { open: boolean, onClose: 
       <DialogContent className="save-server-dialog">
         <DialogHeading>{t('cloud.saveDialogTitle')}</DialogHeading>
         <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+
+          {/* Storage Mode Selection */}
+          <div style={{ display: 'flex', gap: '15px', paddingBottom: '10px', borderBottom: '1px solid #eee' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+              <input
+                type="radio"
+                name="storageMode"
+                checked={mode === StorageMode.Cloud}
+                onChange={() => setMode(StorageMode.Cloud)}
+              />
+              {t('cloud.modeCloud') || 'Cloud'}
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+              <input
+                type="radio"
+                name="storageMode"
+                checked={mode === StorageMode.Local}
+                onChange={() => setMode(StorageMode.Local)}
+              />
+              {t('cloud.modeLocal') || 'Local Browser'}
+            </label>
+          </div>
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <label style={{ fontWeight: 500, color: '#444' }}>{t('cloud.enterTitle')}</label>
             <input
@@ -222,11 +269,19 @@ export const CloudDrawingsDialog = ({ open, onClose }: { open: boolean, onClose:
   return (
     <CloudFileDialog
       onClose={onClose}
-      onOpen={async (drawing, readonly) => {
+      onOpen={async (drawing, readonly, isLocal = false) => {
         try {
-          // Fetch full details including 'data'
-          const fullDrawing = await DrawingService.getOne(drawing.id);
-          const data = JSON.parse(fullDrawing.data);
+          let fullDrawing;
+          let data;
+
+          if (isLocal) {
+            fullDrawing = await LocalDrawingService.getOne(drawing.id);
+            data = JSON.parse(fullDrawing.data);
+          } else {
+            // Fetch full details including 'data'
+            fullDrawing = await DrawingService.getOne(drawing.id);
+            data = JSON.parse(fullDrawing.data);
+          }
 
           if (Array.isArray(data)) {
             clearAndLoad(data);

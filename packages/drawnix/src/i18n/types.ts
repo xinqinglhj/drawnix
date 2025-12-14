@@ -136,6 +136,13 @@ export interface Translations {
   'cloud.saveAsNew': string;
   'cloud.view': string;
   'cloud.edit': string;
+  'cloud.tabCloud': string;
+  'cloud.tabLocal': string;
+  'cloud.syncToLocal': string;
+  'cloud.syncToCloud': string;
+  'cloud.syncSuccess': string;
+  'cloud.modeCloud': string;
+  'cloud.modeLocal': string;
 
   // Link popup items
   'popupLink.delLink': string;

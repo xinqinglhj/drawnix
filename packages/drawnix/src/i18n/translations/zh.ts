@@ -131,6 +131,13 @@ const zhTranslations: Translations = {
   'cloud.saveAsNew': '另存为新画作',
   'cloud.view': '查看',
   'cloud.edit': '编辑',
+  'cloud.tabCloud': '云端画作',
+  'cloud.tabLocal': '本地画作',
+  'cloud.syncToLocal': '下载到本地',
+  'cloud.syncToCloud': '上传到云端',
+  'cloud.syncSuccess': '同步成功',
+  'cloud.modeCloud': '云端',
+  'cloud.modeLocal': '本地浏览器',
 
   // Link popup items
   'popupLink.delLink': '移除连结',

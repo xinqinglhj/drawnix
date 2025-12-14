@@ -134,6 +134,13 @@ const enTranslations: Translations = {
   'cloud.saveAsNew': 'Save as New',
   'cloud.view': 'View',
   'cloud.edit': 'Edit',
+  'cloud.tabCloud': 'Cloud Drawings',
+  'cloud.tabLocal': 'Local Drawings',
+  'cloud.syncToLocal': 'Save to Local',
+  'cloud.syncToCloud': 'Upload to Cloud',
+  'cloud.syncSuccess': 'Success',
+  'cloud.modeCloud': 'Cloud',
+  'cloud.modeLocal': 'Local Browser',
 
   // Link popup items
   'popupLink.delLink': 'Delete Link',

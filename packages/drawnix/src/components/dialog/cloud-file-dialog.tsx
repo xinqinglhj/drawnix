@@ -5,6 +5,9 @@ import { useI18n } from '../../i18n';
 import './cloud-file-dialog.scss';
 import { TrashIcon } from '../icons';
 
+import { LocalDrawingService } from '../../api/local-drawing-service';
+import { StorageManager } from '../../api/storage-manager';
+
 export interface CloudFileDialogProps {
     onClose: () => void;
     onOpen: (drawing: RemoteDrawing, readonly: boolean) => void;
@@ -19,6 +22,9 @@ export const CloudFileDialog: React.FC<CloudFileDialogProps> = ({
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    // Tab State: 'cloud' | 'local'
+    const [tab, setTab] = useState<'cloud' | 'local'>('cloud');
+
     // Pagination & Search State
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
@@ -28,25 +34,40 @@ export const CloudFileDialog: React.FC<CloudFileDialogProps> = ({
     const fetchDrawings = async () => {
         setLoading(true);
         try {
-            const result = await DrawingService.getAll({
-                page,
-                pageSize,
-                title: search
-            });
-            setDrawings(result.data);
+            let result;
+            if (tab === 'local') {
+                result = await LocalDrawingService.getAll({
+                    page,
+                    pageSize,
+                    title: search
+                });
+            } else {
+                result = await DrawingService.getAll({
+                    page,
+                    pageSize,
+                    title: search
+                });
+            }
+            // Temporarily cast generic LocalDrawing to RemoteDrawing for uniform state
+            // (They structure is compatible enough for list view)
+            setDrawings(result.data as any);
             setTotal(result.total);
             setError(null);
         } catch (e: any) {
             setError(e.message);
+            // If cloud fails, maybe suggest local?
+            if (tab === 'cloud') {
+                // Don't auto-switch just yet to avoid confusion, but show error.
+            }
         } finally {
             setLoading(false);
         }
     };
 
-    // Trigger fetch when parameters change
+    // Trigger fetch when parameters or TAB change
     useEffect(() => {
         fetchDrawings();
-    }, [page, pageSize]);
+    }, [page, pageSize, tab]);
 
     // Handle search enter or blur
     const handleSearch = () => {
@@ -58,11 +79,33 @@ export const CloudFileDialog: React.FC<CloudFileDialogProps> = ({
         e.stopPropagation();
         if (confirm(t('cloud.deleteConfirm'))) {
             try {
-                await DrawingService.delete(id);
+                if (tab === 'local') {
+                    await LocalDrawingService.delete(id);
+                } else {
+                    await DrawingService.delete(id);
+                }
                 fetchDrawings(); // Reload current page
             } catch (e: any) {
                 alert(e.message);
             }
+        }
+    };
+
+    const handleSyncToLocal = async (drawing: RemoteDrawing) => {
+        try {
+            await StorageManager.syncToLocal(drawing);
+            alert(t('cloud.syncSuccess') || 'Saved into Local Storage!');
+        } catch (e: any) {
+            alert('Sync failed: ' + e.message);
+        }
+    };
+
+    const handleSyncToCloud = async (drawing: any) => { // using any for simplified local drawing type
+        try {
+            await StorageManager.syncToCloud(drawing);
+            alert(t('cloud.syncSuccess') || 'Uploaded to Cloud!');
+        } catch (e: any) {
+            alert('Upload failed: ' + e.message);
         }
     };
 
@@ -75,6 +118,35 @@ export const CloudFileDialog: React.FC<CloudFileDialogProps> = ({
         >
             <DialogContent className="cloud-file-dialog">
                 <DialogHeading>{t('cloud.dialogTitle')}</DialogHeading>
+
+
+                {/* Tabs */}
+                <div className="tab-header" style={{ display: 'flex', borderBottom: '1px solid #ddd', marginBottom: '10px' }}>
+                    <div
+                        onClick={() => { setTab('cloud'); setPage(1); }}
+                        style={{
+                            padding: '10px 15px',
+                            cursor: 'pointer',
+                            borderBottom: tab === 'cloud' ? '2px solid #007bff' : 'none',
+                            color: tab === 'cloud' ? '#007bff' : '#666',
+                            fontWeight: tab === 'cloud' ? 600 : 400
+                        }}
+                    >
+                        {t('cloud.tabCloud') || 'Cloud Drawings'}
+                    </div>
+                    <div
+                        onClick={() => { setTab('local'); setPage(1); }}
+                        style={{
+                            padding: '10px 15px',
+                            cursor: 'pointer',
+                            borderBottom: tab === 'local' ? '2px solid #007bff' : 'none',
+                            color: tab === 'local' ? '#007bff' : '#666',
+                            fontWeight: tab === 'local' ? 600 : 400
+                        }}
+                    >
+                        {t('cloud.tabLocal') || 'Local Drawings'}
+                    </div>
+                </div>
 
                 {/* Search Bar */}
                 <div style={{ padding: '0 10px 10px 10px', display: 'flex', gap: '8px' }}>
@@ -139,6 +211,26 @@ export const CloudFileDialog: React.FC<CloudFileDialogProps> = ({
                                 >
                                     {t('cloud.edit') || 'Edit'}
                                 </button>
+
+                                {/* Sync Actions */}
+                                {tab === 'cloud' ? (
+                                    <button
+                                        className="action-btn"
+                                        onClick={() => handleSyncToLocal(drawing)}
+                                        title={t('cloud.syncToLocal') || 'Save to Local'}
+                                    >
+                                        💾
+                                    </button>
+                                ) : (
+                                    <button
+                                        className="action-btn"
+                                        onClick={() => handleSyncToCloud(drawing as any)}
+                                        title={t('cloud.syncToCloud') || 'Upload to Cloud'}
+                                    >
+                                        ☁️
+                                    </button>
+                                )}
+
                                 <button
                                     className="delete-btn"
                                     onClick={(e) => handleDelete(e, drawing.id)}
