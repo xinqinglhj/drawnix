@@ -8,6 +8,11 @@ FROM swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/library/node:20-bullseye
 
 WORKDIR /app
 
+# sqlite3 模块安装根据 node 是否包含sqlite3选择安装
+# Install build dependencies for native modules (sqlite3)
+# ARM64 often requires building from source, which needs python3, make, and g++
+RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt/lists/*
+
 # 1. Install Server Dependencies
 COPY apps/server/package.json .
 RUN npm install --production
