@@ -198,117 +198,148 @@ export const CloudFileDialog: React.FC<CloudFileDialogProps> = ({
 
 
 
-                {/* Bulk Actions Controls */}
-                <div style={{ padding: '0 10px 10px 10px', display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                {/* Top Controls Container */}
+                <div style={{ padding: '0 10px 10px 10px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '20px' }}>
 
-                    {/* Batch Delete */}
-                    {selectedIds.size > 0 && (
-                        <button
-                            onClick={handleBulkDelete}
-                            className="action-btn"
-                            style={{ padding: '6px 12px', fontSize: '13px', background: '#ffebee', color: '#c62828', border: '1px solid #ffcdd2' }}
-                            disabled={loading}
-                        >
-                            {loading ? 'Deleting...' : (t('cloud.deleteSelected') || 'Delete Selected') + ` (${selectedIds.size})`}
-                        </button>
-                    )}
+                    {/* Left: Search Area */}
+                    <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px', fontWeight: 'bold' }}>
+                            {t('cloud.filterTitle') || 'Search'}
+                        </div>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <input
+                                type="text"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                placeholder={t('cloud.searchPlaceholder')}
+                                style={{
+                                    flex: 1,
+                                    padding: '6px 8px',
+                                    border: '1px solid #ddd',
+                                    borderRadius: '4px',
+                                    fontSize: '14px'
+                                }}
+                            />
+                            <button
+                                onClick={handleSearch}
+                                style={{
+                                    padding: '6px 12px',
+                                    background: '#007bff',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                🔍
+                            </button>
+                        </div>
+                    </div>
 
-                    {tab === 'cloud' ? (
-                        <button
-                            onClick={async () => {
-                                if (!confirm(t('cloud.confirmSyncAllToLocal') || 'Sync all cloud drawings to local?')) return;
-                                setLoading(true);
-                                try {
-                                    await StorageManager.syncAllToLocal((curr, total) => {
-                                        // Optional: Update progress state if you add UI for it
-                                        console.log(`Syncing to local: ${curr}/${total}`);
-                                    });
-                                    alert(t('cloud.syncAllSuccess') || 'All synced to local!');
-                                    fetchDrawings(); // Refresh view if on local tab (though we are on cloud tab)
-                                } catch (e: any) {
-                                    alert('Sync all failed: ' + e.message);
-                                } finally {
-                                    setLoading(false);
-                                }
-                            }}
-                            className="action-btn"
-                            style={{ padding: '6px 12px', fontSize: '13px', background: '#e3f2fd', color: '#0d47a1', border: '1px solid #bbdefb' }}
-                            disabled={loading}
-                        >
-                            {loading ? 'Syncing...' : (t('cloud.syncAllToLocal') || 'Sync All to Local')}
-                        </button>
-                    ) : (
-                        <button
-                            onClick={async () => {
-                                if (!confirm(t('cloud.confirmSyncAllToCloud') || 'Sync all local drawings to cloud?')) return;
-                                setLoading(true);
-                                try {
-                                    await StorageManager.syncAllToCloud((curr, total) => {
-                                        console.log(`Syncing to cloud: ${curr}/${total}`);
-                                    });
-                                    alert(t('cloud.syncAllSuccess') || 'All synced to cloud!');
-                                    fetchDrawings();
-                                } catch (e: any) {
-                                    alert('Sync all failed: ' + e.message);
-                                } finally {
-                                    setLoading(false);
-                                }
-                            }}
-                            className="action-btn"
-                            style={{ padding: '6px 12px', fontSize: '13px', background: '#e3f2fd', color: '#0d47a1', border: '1px solid #bbdefb' }}
-                            disabled={loading}
-                        >
-                            {loading ? 'Syncing...' : (t('cloud.syncAllToCloud') || 'Sync All to Cloud')}
-                        </button>
-                    )}
+                    {/* Right: Functional/Action Area */}
+                    <div>
+                        <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px', fontWeight: 'bold', textAlign: 'right' }}>
+                            {t('cloud.actionsTitle') || 'Actions'}
+                        </div>
+                        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                            {/* Batch Delete */}
+                            {selectedIds.size > 0 && (
+                                <button
+                                    onClick={handleBulkDelete}
+                                    className="action-btn"
+                                    style={{ padding: '6px 12px', fontSize: '13px', background: '#ffebee', color: '#c62828', border: '1px solid #ffcdd2' }}
+                                    disabled={loading}
+                                >
+                                    {loading ? 'Deleting...' : (t('cloud.deleteSelected') || 'Delete Selected') + ` (${selectedIds.size})`}
+                                </button>
+                            )}
+
+                            {/* Sync All Button */}
+                            {tab === 'cloud' ? (
+                                <button
+                                    onClick={async () => {
+                                        if (!confirm(t('cloud.confirmSyncAllToLocal') || 'Sync all cloud drawings to local?')) return;
+                                        setLoading(true);
+                                        try {
+                                            await StorageManager.syncAllToLocal((curr, total) => {
+                                                console.log(`Syncing to local: ${curr}/${total}`);
+                                            });
+                                            alert(t('cloud.syncAllSuccess') || 'All synced to local!');
+                                            fetchDrawings();
+                                        } catch (e: any) {
+                                            alert('Sync all failed: ' + e.message);
+                                        } finally {
+                                            setLoading(false);
+                                        }
+                                    }}
+                                    className="action-btn"
+                                    style={{ padding: '6px 12px', fontSize: '13px', background: '#e3f2fd', color: '#0d47a1', border: '1px solid #bbdefb' }}
+                                    disabled={loading}
+                                >
+                                    {loading ? 'Syncing...' : (t('cloud.syncAllToLocal') || 'Sync All to Local')}
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={async () => {
+                                        if (!confirm(t('cloud.confirmSyncAllToCloud') || 'Sync all local drawings to cloud?')) return;
+                                        setLoading(true);
+                                        try {
+                                            await StorageManager.syncAllToCloud((curr, total) => {
+                                                console.log(`Syncing to cloud: ${curr}/${total}`);
+                                            });
+                                            alert(t('cloud.syncAllSuccess') || 'All synced to cloud!');
+                                            fetchDrawings();
+                                        } catch (e: any) {
+                                            alert('Sync all failed: ' + e.message);
+                                        } finally {
+                                            setLoading(false);
+                                        }
+                                    }}
+                                    className="action-btn"
+                                    style={{ padding: '6px 12px', fontSize: '13px', background: '#e3f2fd', color: '#0d47a1', border: '1px solid #bbdefb' }}
+                                    disabled={loading}
+                                >
+                                    {loading ? 'Syncing...' : (t('cloud.syncAllToCloud') || 'Sync All to Cloud')}
+                                </button>
+                            )}
+                        </div>
+                    </div>
                 </div>
 
-                {/* Search Bar */}
-                <div style={{ padding: '0 10px 10px 10px', display: 'flex', gap: '8px' }}>
-
-                    {/* Select All Checkbox */}
-                    {drawings.length > 0 && (
-                        <div style={{ display: 'flex', alignItems: 'center', paddingLeft: '4px' }}>
+                {/* List Header */}
+                <div style={{
+                    display: 'flex',
+                    padding: '8px 10px',
+                    background: '#f8f9fa',
+                    borderTop: '1px solid #eee',
+                    borderBottom: '1px solid #eee',
+                    fontWeight: 600,
+                    fontSize: '13px',
+                    color: '#555'
+                }}>
+                    <div style={{ width: '40px', textAlign: 'center' }}>
+                        {/* Select All Checkbox */}
+                        {drawings.length > 0 && (
                             <input
                                 type="checkbox"
                                 checked={drawings.length > 0 && selectedIds.size === drawings.length}
                                 onChange={toggleSelectAll}
-                                style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+                                style={{ cursor: 'pointer' }}
+                                title={t('cloud.colSelect')}
                             />
-                        </div>
-                    )}
-
-                    <input
-                        type="text"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                        placeholder={t('cloud.searchPlaceholder')}
-                        style={{
-                            flex: 1,
-                            padding: '8px',
-                            border: '1px solid #ddd',
-                            borderRadius: '4px',
-                            fontSize: '14px'
-                        }}
-                    />
-                    <button
-                        onClick={handleSearch}
-                        style={{
-                            padding: '8px 16px',
-                            background: '#007bff',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        Search
-                    </button>
+                        )}
+                    </div>
+                    <div style={{ flex: 1, paddingLeft: '10px' }}>
+                        {t('cloud.colContent') || 'Content'}
+                    </div>
+                    <div style={{ width: '200px', textAlign: 'right', paddingRight: '10px' }}>
+                        {t('cloud.colActions') || 'Actions'}
+                    </div>
                 </div>
 
-                <div className="cloud-file-list">
-                    {loading && <div>{t('cloud.loading')}</div>}
+                <div className="cloud-file-list" style={{ borderTop: 'none' }}>
+                    {loading && <div style={{ padding: '20px', textAlign: 'center', color: '#999' }}>{t('cloud.loading')}</div>}
                     {error && <div className="error">{error}</div>}
                     {!loading && !error && drawings.length === 0 && (
                         <div className="empty">{t('cloud.empty')}</div>
@@ -317,10 +348,10 @@ export const CloudFileDialog: React.FC<CloudFileDialogProps> = ({
                         <div
                             key={drawing.id}
                             className="cloud-file-item"
-                            style={{ display: 'flex', alignItems: 'center' }}
+                            style={{ display: 'flex', alignItems: 'center', padding: '10px' }}
                         >
                             {/* Row Checkbox */}
-                            <div style={{ marginRight: '10px', display: 'flex', alignItems: 'center' }}>
+                            <div style={{ width: '40px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                 <input
                                     type="checkbox"
                                     checked={selectedIds.has(drawing.id)}
@@ -329,13 +360,14 @@ export const CloudFileDialog: React.FC<CloudFileDialogProps> = ({
                                 />
                             </div>
 
-                            <div className="file-info">
-                                <span className="file-title">{drawing.title}</span>
-                                <span className="file-date">
+                            <div className="file-info" style={{ flex: 1, paddingLeft: '10px' }}>
+                                <div className="file-title" style={{ fontWeight: 500, marginBottom: '2px' }}>{drawing.title}</div>
+                                <div className="file-date" style={{ fontSize: '12px', color: '#999' }}>
                                     {new Date(drawing.updated_at).toLocaleString()}
-                                </span>
+                                </div>
                             </div>
-                            <div className="file-actions">
+
+                            <div className="file-actions" style={{ width: '200px', display: 'flex', justifyContent: 'flex-end', gap: '4px', whiteSpace: 'nowrap' }}>
                                 <button
                                     className="action-btn"
                                     onClick={() => onOpen(drawing, true, tab === 'local')}

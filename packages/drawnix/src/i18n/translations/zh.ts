@@ -147,6 +147,11 @@ const zhTranslations: Translations = {
   'cloud.confirmDeleteSelected': '确定要删除选中的 {{count}} 个项目吗？',
   'cloud.confirmSyncAllToCloud': '确定要将所有本地画作同步到云端吗？',
   'cloud.syncAllSuccess': '批量同步完成！',
+  'cloud.colSelect': '选择',
+  'cloud.colContent': '内容',
+  'cloud.colActions': '操作',
+  'cloud.filterTitle': '检索条件',
+  'cloud.actionsTitle': '批量操作',
 
   // Link popup items
   'popupLink.delLink': '移除连结',

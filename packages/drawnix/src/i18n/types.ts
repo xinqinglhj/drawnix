@@ -152,6 +152,11 @@ export interface Translations {
   'cloud.confirmDeleteSelected': string;
   'cloud.confirmSyncAllToCloud': string;
   'cloud.syncAllSuccess': string;
+  'cloud.colSelect': string;
+  'cloud.colContent': string;
+  'cloud.colActions': string;
+  'cloud.filterTitle': string;
+  'cloud.actionsTitle': string;
 
   // Link popup items
   'popupLink.delLink': string;

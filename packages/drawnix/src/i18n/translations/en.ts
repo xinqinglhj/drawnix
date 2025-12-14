@@ -150,6 +150,11 @@ const enTranslations: Translations = {
   'cloud.confirmDeleteSelected': 'Are you sure you want to delete {{count}} selected items?',
   'cloud.confirmSyncAllToCloud': 'Are you sure you want to sync all local drawings to cloud storage?',
   'cloud.syncAllSuccess': 'Bulk Sync Completed!',
+  'cloud.colSelect': 'Select',
+  'cloud.colContent': 'Content',
+  'cloud.colActions': 'Actions',
+  'cloud.filterTitle': 'Search',
+  'cloud.actionsTitle': 'Bulk Actions',
 
   // Link popup items
   'popupLink.delLink': 'Delete Link',
