@@ -24,6 +24,7 @@ COPY apps/server/src ./apps/server/src
 # Ensure you upload the 'dist' folder to the server in the same directory as this Dockerfile
 COPY dist ./dist
 
+# 应用监听的端口（由 environment: PORT=3000 和 EXPOSE 3000 定义）
 EXPOSE 3000
 
 CMD ["node", "apps/server/src/main.js"]

@@ -6,9 +6,9 @@ services:
       dockerfile: Dockerfile.deploy
     image: drawnix-server
     ports:
-      - "3000:3000"
+      - "8100:3000" # 宿主机 8100 端口 → 容器 3000 端口, 外部访问通过 http://宿主机IP:8100，流量转发到容器内的 3000 端口。
     restart: always
     environment:
-      - PORT=3000
+      - PORT=3000 # 保持 PORT=3000，确保应用在容器内继续监听 3000 端口（与 Dockerfile.deploy 中 EXPOSE 3000 和应用代码逻辑一致）。
     volumes:
       - ./data:/app/data  # Optional: Persist SQLite DB
