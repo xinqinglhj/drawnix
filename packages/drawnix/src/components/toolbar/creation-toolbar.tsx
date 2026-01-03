@@ -13,7 +13,9 @@ import {
   FeltTipPenIcon,
   ImageIcon,
   ExtraToolsIcon,
+  FrameIcon,
 } from '../icons';
+import { FrameShape } from '../../plugins/with-frame';
 import { useBoard } from '@plait-board/react-board';
 import {
   ATTACHED_ELEMENT_CLASS_NAME,
@@ -29,7 +31,7 @@ import {
   DrawPointerType,
   FlowchartSymbols,
 } from '@plait/draw';
-import { FreehandPanel , FREEHANDS } from './freehand-panel/freehand-panel';
+import { FreehandPanel, FREEHANDS } from './freehand-panel/freehand-panel';
 import { ShapePicker } from '../shape-picker';
 import { ArrowPicker } from '../arrow-picker';
 import { useState } from 'react';
@@ -111,6 +113,12 @@ export const BUTTONS: AppToolButtonProps[] = [
     key: 'image',
   },
   {
+    icon: FrameIcon,
+    titleKey: 'toolbar.frame',
+    key: 'frame',
+    pointer: FrameShape.frame,
+  },
+  {
     icon: ExtraToolsIcon,
     titleKey: 'toolbar.extraTools',
     key: 'extra-tools',
@@ -164,7 +172,7 @@ export const CreationToolbar = () => {
 
   const checkCurrentPointerIsFreehand = (board: PlaitBoard) => {
     return PlaitBoard.isInPointer(board, [
-      FreehandShape.feltTipPen, 
+      FreehandShape.feltTipPen,
       FreehandShape.eraser,
     ]);
   };
@@ -253,7 +261,7 @@ export const CreationToolbar = () => {
                         setPointer(lastShapePointer || SHAPES[0].pointer)
                         setCreationMode(board, BoardCreationMode.drawing);
                         BoardTransforms.updatePointerType(board, lastShapePointer || SHAPES[0].pointer);
-                      } 
+                      }
                     }}
                   />
                 </PopoverTrigger>
